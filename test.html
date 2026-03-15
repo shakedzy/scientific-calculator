@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator tests</title>
+</head>
+<body>
+  <pre id="out"></pre>
+  <script src="calculator.js"></script>
+  <script>
+    const e = window.__calcEvaluate;
+    const out = document.getElementById("out");
+
+    function approx(a, b) {
+      if (a === b) return true;
+      if (typeof a !== "number" || typeof b !== "number" || isNaN(a) || isNaN(b)) return false;
+      return Math.abs(a - b) < 1e-10;
+    }
+
+    const tests = [
+      ["2+3", 5],
+      ["10-4", 6],
+      ["3*4", 12],
+      ["20/4", 5],
+      ["2^10", 1024],
+      ["10%3", 1],
+      ["sin(30)", 0.5],
+      ["cos(60)", 0.5],
+      ["sqrt(16)", 4],
+      ["log(100)", 2],
+      ["ln(e)", 1],
+      ["π", Math.PI],
+      ["e", Math.E],
+      ["(2+3)*4", 20],
+      ["2+3*4", 14],
+      ["-5+3", -2],
+      ["5!", 120],
+    ];
+
+    let failed = 0;
+    tests.forEach(function (t) {
+      const expr = t[0];
+      const expected = t[1];
+      const result = e(expr, "DEG");
+      const ok = approx(result, expected);
+      if (!ok) {
+        failed++;
+        out.textContent += "FAIL " + expr + " => " + result + " (expected " + expected + ")\n";
+      }
+    });
+
+    if (failed === 0) {
+      out.textContent += "All " + tests.length + " tests passed.\n";
+    } else {
+      out.textContent += failed + " test(s) failed.\n";
+    }
+  </script>
+</body>
+</html>
